@@ -82,4 +82,29 @@ class PersonRepositoryImplTest {
 
         fionaMono.subscribe(person -> System.out.println(person.getLastName()));
     }
+
+    /**
+     * Dos cosas importantes sobre esta función.
+     * Si en lugar de "single()" utilizamos "next()", "subscribe" solamente retornará un "personMono" vacío,
+     * y no se reportará ningún error.
+     * Si nmo usamos "subscribe", aunque usemos "single()", no va a ocurrir nada, porque no habrá
+     * Back Pressure.
+     */
+    @Test
+    void testFindPersonByIdNotFound() {
+        Flux<Person> personFlux = personRepository.findAll();
+
+        final Integer id = 8;
+
+        Mono<Person> personMono = personFlux.filter(person -> person.getId() == id).single()
+                .doOnError(throwable -> {
+                    System.out.println("Error occurred in flux");
+                    System.out.println(throwable.toString());
+                });
+
+        personMono.subscribe(System.out::println, throwable -> {
+            System.out.println("Error occurred in the mono");
+            System.out.println(throwable.toString());
+        });
+    }
 }
