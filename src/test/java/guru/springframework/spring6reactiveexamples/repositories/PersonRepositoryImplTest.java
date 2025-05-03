@@ -8,9 +8,25 @@ import reactor.core.publisher.Mono;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 class PersonRepositoryImplTest {
 
     PersonRepository personRepository = new PersonRepositoryImpl();
+
+    @Test
+    void testGetById() {
+        Mono<Person> personMono = personRepository.getById(1);
+
+        assertEquals(Boolean.TRUE, personMono.hasElement().block());
+    }
+
+    @Test
+    void testGetByIdNotFound() {
+        Mono<Person> personMono = personRepository.getById(6);
+
+        assertNotEquals(Boolean.TRUE, personMono.hasElement().block());
+    }
 
     @Test
     void testMonoByIdBlock() {
@@ -76,7 +92,7 @@ class PersonRepositoryImplTest {
     }
 
     @Test
-    void testGetById() {
+    void testFindById() {
         Mono<Person> fionaMono = personRepository.findAll().filter(person -> person.getFirstName().equals("Fiona"))
                 .next();
 
