@@ -13,6 +13,8 @@ public class PersonRepositoryImpl implements PersonRepository {
 
     @Override
     public Mono<Person> getById(final Integer id) {
+        // Si extendemos la interfaz con ReactiveCrudRepository,
+        // podríamos utilizar "findById", que es mucho más eficiente.
         return findAll().filter(person -> person.getId().equals(id)).next();
     }
 
